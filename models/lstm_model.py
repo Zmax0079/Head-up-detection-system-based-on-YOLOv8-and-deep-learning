@@ -1,0 +1,31 @@
+import torch
+import torch.nn as nn
+from torchvision import models
+from config import NUM_CLASSES
+
+class LSTMHeadPoseModel(nn.Module):
+    def __init__(self, num_classes=NUM_CLASSES):
+        super().__init__()
+        backbone = models.resnet18(weights=None)
+        self.feature_extractor = nn.Sequential(*list(backbone.children())[:-1])
+        self.feature_dim = 512
+
+        self.lstm = nn.LSTM(
+            input_size=self.feature_dim,
+            hidden_size=256,
+            num_layers=1,
+            batch_first=True
+        )
+        self.fc = nn.Linear(256, num_classes)
+
+    def forward(self, x):
+        B, T, C, H, W = x.shape
+        x = x.view(B * T, C, H, W)
+        feat = self.feature_extractor(x).view(B, T, self.feature_dim)
+        out, _ = self.lstm(feat)
+        out = out[:, -1, :]
+        out = self.fc(out)
+        return out
+
+def get_lstm_model(num_classes=NUM_CLASSES):
+    return LSTMHeadPoseModel(num_classes=num_classes)
