@@ -4,7 +4,6 @@
 
 ## 1) 数据地址（需补充下载）
 
-- SCUT-HEAD 官方页面（检测标注来源）：https://github.com/HCIILAB/SCUT-HEAD-Dataset-Release
 - Ultralytics YOLO 预训练权重：`yolov8n.pt` / `yolov8s.pt`（可通过 `ultralytics` 自动下载）
 - TorchVision 预训练权重：
   - `resnet18-f37072fd.pth`
